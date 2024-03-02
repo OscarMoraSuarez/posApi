@@ -6,9 +6,13 @@ import com.NetTools.API.Dominio.producto.ProductoRepository;
 import com.NetTools.API.Dominio.Inventario.InventarioService;
 import com.NetTools.API.Dominio.ubicacion.Ubicacion;
 import com.NetTools.API.Dominio.ubicacion.UbicacionRepository;
+import com.NetTools.API.Infra.Exceptions.LocationNotFoundException;
+import com.NetTools.API.Infra.Exceptions.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.xml.stream.Location;
 
 @Service
 public class RegistroIngresoService {
@@ -27,23 +31,23 @@ public class RegistroIngresoService {
 
 
     @Transactional
-    public DatosDetalleIngreso registrar(DatosRegistroIngreso datos) {
+    public DatosDetalleIngreso registrar(DatosRegistroIngreso datos)throws ProductNotFoundException, LocationNotFoundException{
+        Producto producto = productoRepository.findByProductoId(datos.productoId());
+        Ubicacion ubicacion = ubicacionRepository.findByUbicacionId(datos.ubicacionId());
 
-        Producto producto= productoRepository.findByProductoId(datos.productoId());
-        Ubicacion ubicacion =ubicacionRepository.findByUbicacionId(datos.ubicacionId());
+        if (producto == null) {
+            throw new ProductNotFoundException("No existe un producto con el Id " + datos.productoId());
+        }
 
-        if (producto==null){
-            System.out.println("no existe un producto con ese id");
+        if (ubicacion == null) {
+            throw new LocationNotFoundException("No existe un producto con el Id " + datos.ubicacionId());
         }
-        if (ubicacion==null){
-            System.out.println("no existe una ubicacion con ese id");
-        }
-        var ingreso=new Ingreso(producto,datos.cantidad(),ubicacion);
+
+        var ingreso = new Ingreso(producto, datos.cantidad(), ubicacion);
         ingresoRepository.save(ingreso);
-        inventarioService.actualizarInventario(producto.getCodigo(),datos.cantidad());
+        inventarioService.actualizarInventario(producto.getCodigo(), datos.cantidad());
 
         return new DatosDetalleIngreso(ingreso);
-
     }
 
 

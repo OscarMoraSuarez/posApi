@@ -5,6 +5,8 @@ package com.NetTools.API.controller;
 
 import com.NetTools.API.Dominio.producto.*;
 
+import com.NetTools.API.Infra.Exceptions.ArchivoYaExistenteException;
+import com.NetTools.API.Infra.Exceptions.NombreArchivoVacioException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 
@@ -79,8 +81,14 @@ public class ProductoController {
             URI url = uriComponentsBuilder.path("/producto/{id}").buildAndExpand(producto.getProductoId()).toUri();
             return ResponseEntity.created(url).body(datosDetalleProducto);
 
-        } catch (FileAlreadyExistsException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("El archivo ya existe en la carpeta de destino");//404
+        }  catch (NombreArchivoVacioException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: El nombre del archivo es nulo o vacío");
+
+        } catch (ArchivoYaExistenteException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: El archivo ya existe en la carpeta de destino");
+
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al guardar el archivo en la carpeta de destino");
@@ -124,19 +132,19 @@ public class ProductoController {
 
     //////////////////////////////////////////////////////
     //DELETE en DB
-   /* @DeleteMapping("/{id}")
+    @DeleteMapping("/{id}")
     @Transactional
     public ResponseEntity eliminarProducto(@PathVariable Long id){
         Producto producto =productoRepository.getReferenceById(id);
         productoRepository.delete(producto);
         return ResponseEntity.noContent().build();
-    }*/
+    }
 
 
 
 
     //////////////////////////////////////////////////////
-   @DeleteMapping("/{id}")
+   /*@DeleteMapping("/{id}")
     @Transactional
     //ResponseEntity nos ayuda a retornar respuestas al cliente
     public ResponseEntity eliminarProductoLogico(@PathVariable Long id){
@@ -146,7 +154,7 @@ public class ProductoController {
         //noContent retorna un 204 ya que Spring mapea la respuesta a un 204
         //Es decir noContent() define el codigo 204 y el build() lo convierte a un responseEntity
         return ResponseEntity.noContent().build();
-    }
+    }*/
 
 
     //////////////////////////////////////////////////////

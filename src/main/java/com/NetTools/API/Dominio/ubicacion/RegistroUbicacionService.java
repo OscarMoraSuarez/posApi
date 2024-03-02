@@ -3,6 +3,8 @@ package com.NetTools.API.Dominio.ubicacion;
 import com.NetTools.API.Dominio.categoria.Categoria;
 import com.NetTools.API.Dominio.categoria.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,5 +43,6 @@ public class RegistroUbicacionService {
         // dependiendo de tus requisitos de negocio.
         return null;
     }
+
 
 }

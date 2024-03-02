@@ -2,6 +2,8 @@ package com.NetTools.API.Dominio.producto;
 
 import com.NetTools.API.Dominio.categoria.Categoria;
 import com.NetTools.API.Dominio.categoria.CategoriaRepository;
+import com.NetTools.API.Infra.Exceptions.ArchivoYaExistenteException;
+import com.NetTools.API.Infra.Exceptions.NombreArchivoVacioException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +62,8 @@ public class RegistroDeProductoService {
 
         if (nombreArchivo == null || nombreArchivo.trim().isEmpty()) {
             // Manejar el caso cuando el nombre del archivo es null o vacío
-            throw new IllegalArgumentException("El nombre del archivo es nulo o vacío");
+            //throw new IllegalArgumentException("El nombre del archivo es nulo o vacío");
+            throw new NombreArchivoVacioException("El nombre del archivo es nulo o vacío");
         }
         System.out.println(nombreArchivo);
         String carpetaDestino = "mediaFiles";
@@ -76,7 +79,8 @@ public class RegistroDeProductoService {
         System.out.println("validando existencia del archivo en carpeta");
         // Verificar si el archivo existe en la carpeta
         if (Files.exists(destino)) {
-            throw new FileAlreadyExistsException("El archivo ya existe en la carpeta de destino");
+            throw new ArchivoYaExistenteException("El archivo ya existe en la carpeta de destino");
+
         }
 
         // Copiar el contenido del archivo al destino
