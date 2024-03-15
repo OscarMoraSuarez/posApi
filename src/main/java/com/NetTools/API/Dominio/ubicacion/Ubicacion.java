@@ -19,17 +19,7 @@ public class Ubicacion {
 
     private Long ubicacionId;
     private String codigoUbicacion;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name="categoriaId")
-    private Categoria categoria;
-    private String zona;
-
-    public Ubicacion(String codigoUbicacion,Categoria categoria, String zona) {
-
+    public Ubicacion(String codigoUbicacion) {
         this.codigoUbicacion=codigoUbicacion;
-        this.categoria=categoria;
-        this.zona=zona;
-
-
     }
 }

@@ -6,10 +6,14 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Table(name="ingreso")
-@Entity(name="Ingreso")
+import java.time.LocalDateTime;
+
+@Table(name = "ingreso")
+@Entity(name = "Ingreso")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Ingreso {
@@ -17,20 +21,25 @@ public class Ingreso {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long ingresoId;
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="productoId")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "productoId")
     private Producto producto;
-    private int  cantidad;
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="ubicacionId")
+
+    private int cantidad;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ubicacionId")
     private Ubicacion ubicacion;
 
+    @Column(name = "fechaIngreso", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime fechaIngreso;
+
     public Ingreso(Producto producto, int cantidad, Ubicacion ubicacion) {
-
-        this.producto=producto;
-        this.cantidad=cantidad;
-        this.ubicacion=ubicacion;
-
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.ubicacion = ubicacion;
+        this.fechaIngreso = LocalDateTime.now();
     }
 
 

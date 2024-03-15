@@ -5,12 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record DatosRegistroUbicacion(
-        @NotBlank
-        String codigoUbicacion,
         @NotNull
+        @NotBlank
         @Valid
-        Long categoriaId,
-        String zona
+        String codigoUbicacion
+
 ) {
 
 }

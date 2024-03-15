@@ -7,10 +7,10 @@ public record DatosDetalleIngreso(
         Long ingresoId,
        Producto producto,
         int cantidad,
-        Ubicacion ubicacion
-) {
+        Ubicacion ubicacion,
+        java.time.LocalDateTime fechaIngreso) {
     public DatosDetalleIngreso(Ingreso ingreso) {
-        this(ingreso.getIngresoId(), ingreso.getProducto(),ingreso.getCantidad(),ingreso.getUbicacion());
+        this(ingreso.getIngresoId(), ingreso.getProducto(),ingreso.getCantidad(),ingreso.getUbicacion(),ingreso.getFechaIngreso());
     }
 
 }

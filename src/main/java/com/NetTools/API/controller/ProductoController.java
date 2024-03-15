@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileAlreadyExistsException;
+import java.util.List;
 
 
 @RestController
@@ -105,10 +107,17 @@ public class ProductoController {
         return ResponseEntity.ok(productoRepository.findByActivoTrue(paginacion).map(DatosDetalleProducto::new));
     }
 
+    @GetMapping("all")
+    public ResponseEntity<List<Producto>> obtenerProductosActivos() {
+        List<Producto> productos = productoRepository.findByActivoTrue();
+        return ResponseEntity.ok(productos);
+    }
+
+
 
     //////////////////////////////////////////////////////
     @PutMapping
-    @Transactional// para hacer el commit despúes de actualizar se hace la transaccion cone sta anotacion
+    @Transactional// para hacer el commit despúes de actualizar se hace la transaccion con esta anotacion
     public ResponseEntity actualizarProducto(@RequestBody @Valid DatosActualizarProducto datosActualizarProducto){
         // en este caso es necesario @Transactional porque estamos usando JPA puro
         // y noe stamso llamando ningún repositorio
@@ -137,10 +146,10 @@ public class ProductoController {
     public ResponseEntity eliminarProducto(@PathVariable Long id){
         Producto producto =productoRepository.getReferenceById(id);
         productoRepository.delete(producto);
-        return ResponseEntity.noContent().build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Mensaje", "El producto con ID " + id + " ha sido eliminado exitosamente");
+        return ResponseEntity.noContent().headers(headers).build();
     }
-
-
 
 
     //////////////////////////////////////////////////////
@@ -155,10 +164,18 @@ public class ProductoController {
         //Es decir noContent() define el codigo 204 y el build() lo convierte a un responseEntity
         return ResponseEntity.noContent().build();
     }*/
+    @DeleteMapping("/codigo/{codigo}")
+    @Transactional
+    public ResponseEntity eliminarProductoCoodigo(@PathVariable String codigo){
+        Producto producto =productoRepository.getReferenceByCodigo(codigo);
+        productoRepository.delete(producto);
+        return ResponseEntity.noContent().build();
+    }
+
 
 
     //////////////////////////////////////////////////////
-    @GetMapping("/{codigo}")
+    @GetMapping("/codigo/{codigo}")
     public ResponseEntity<DatosDetalleProducto> productoPorCodigo(@PathVariable String codigo) {
         Producto producto = productoRepository.getProductoByCodigo(codigo);
         if(producto!=null){
@@ -175,6 +192,27 @@ public class ProductoController {
             return ResponseEntity.ok(datosProducto);
         }else{
             throw new EntityNotFoundException("el codigo del producto no fue encontrado el producto no existe");
+        }
+
+
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<DatosDetalleProducto> productoPorId(@PathVariable Long id) {
+        Producto producto = productoRepository.findByProductoId(id);
+        if(producto!=null){
+            var datosProducto = new DatosDetalleProducto(
+                    producto.getProductoId(),
+                    producto.getCodigo(),
+                    producto.getDescripcion(),
+                    producto.getCategoria().getCategoriaId(),
+                    producto.getMarca(),
+                    producto.getPrecioEntrada(),
+                    producto.getPrecioSalida(),
+                    producto.getImagePath()
+            );
+            return ResponseEntity.ok(datosProducto);
+        }else{
+            throw new EntityNotFoundException("el Id del producto no fue encontrado el producto no existe");
         }
 
 

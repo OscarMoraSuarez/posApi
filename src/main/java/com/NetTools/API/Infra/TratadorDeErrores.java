@@ -17,8 +17,8 @@ import java.util.List;
 public class TratadorDeErrores extends Exception{
     // Not found
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity  tratarError404(){
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<String> tratarError404(EntityNotFoundException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Producto no encontrado: " + e.getMessage());
     }
 
     // //para arrojar el 404 en vez del 500 serverError
