@@ -1,6 +1,5 @@
 package com.NetTools.API.controller;
 
-import com.NetTools.API.Dominio.producto.Producto;
 import com.NetTools.API.Dominio.ubicacion.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class UbicacionController {
 
     @Autowired
-    private RegistroUbicacionService service;
+    private UbicacionService ubicacionService;
     @Autowired
     private UbicacionRepository ubicacionRepository;
 
     @PostMapping
     public ResponseEntity registrarUbicacion(@RequestBody @Valid DatosRegistroUbicacion datosRegistroUbicacion) {
-        var response=service.registrar(datosRegistroUbicacion);
+        var response= ubicacionService.registrar(datosRegistroUbicacion);
         System.out.println(datosRegistroUbicacion);
 
         return ResponseEntity.ok(response);

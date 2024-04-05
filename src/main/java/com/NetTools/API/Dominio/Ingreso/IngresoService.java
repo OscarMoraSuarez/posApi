@@ -4,23 +4,20 @@ package com.NetTools.API.Dominio.Ingreso;
 import com.NetTools.API.Dominio.producto.Producto;
 import com.NetTools.API.Dominio.producto.ProductoRepository;
 import com.NetTools.API.Dominio.Inventario.InventarioService;
-import com.NetTools.API.Dominio.ubicacion.DatosDetalleUbicacion;
 import com.NetTools.API.Dominio.ubicacion.Ubicacion;
 import com.NetTools.API.Dominio.ubicacion.UbicacionRepository;
 import com.NetTools.API.Infra.Exceptions.LocationNotFoundException;
 import com.NetTools.API.Infra.Exceptions.ProductNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.stream.Location;
 import java.util.Optional;
 
 @Service
-public class RegistroIngresoService {
+public class IngresoService {
 
     @Autowired
     private ProductoRepository productoRepository;
@@ -35,27 +32,28 @@ public class RegistroIngresoService {
 
 
 
+    // Servicio de Ingreso
     @Transactional
-    public DatosDetalleIngreso registrar(DatosRegistroIngreso datos)throws ProductNotFoundException, LocationNotFoundException{
+    public DatosDetalleIngreso registrar(DatosRegistroIngreso datos) throws ProductNotFoundException, LocationNotFoundException {
         Producto producto = productoRepository.findByProductoId(datos.productoId());
-        Ubicacion ubicacion = ubicacionRepository.findByUbicacionId(datos.ubicacionId());
-
         if (producto == null) {
             throw new ProductNotFoundException("No existe un producto con el Id " + datos.productoId());
         }
 
+        Ubicacion ubicacion = ubicacionRepository.findByUbicacionId(datos.ubicacionId());
         if (ubicacion == null) {
-            throw new LocationNotFoundException("No existe un producto con el Id " + datos.ubicacionId());
+            throw new LocationNotFoundException("No existe una ubicación con el Id " + datos.ubicacionId());
         }
 
-        var ingreso = new Ingreso(producto, datos.cantidad(), ubicacion);
+        Ingreso ingreso = new Ingreso(producto, datos.cantidad(), ubicacion);
         ingresoRepository.save(ingreso);
-        inventarioService.sumarInventario(producto.getCodigo(), datos.cantidad());
+
+        inventarioService.sumarInventario(producto.getProductoId(), datos.cantidad(), ubicacion.getUbicacionId(),producto.getCodigo());
 
         return new DatosDetalleIngreso(ingreso);
     }
 
-    @Transactional
+   /* @Transactional
     public ResponseEntity<String> eliminarStock(Long ingresoId, Long productoId, int cantidad) {
         System.out.println(ingresoId+"; "+productoId+";"+cantidad);
         // Buscar ingreso por Id
@@ -84,6 +82,6 @@ public class RegistroIngresoService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("El producto especificado no coincide con el producto del ingreso");
         }
-    }
+    }*/
 
 }

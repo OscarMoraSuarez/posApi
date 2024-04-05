@@ -7,6 +7,9 @@ import java.util.Optional;
 
 
 public interface VentaRepository extends JpaRepository<Venta, Long> {
+    // trae el maximo numero de la tabla
     @Query("SELECT COALESCE(MAX(v.numeroVenta), 0) FROM Venta v")
     Optional<Long> findMaxNumeroVenta();
+
+
 }

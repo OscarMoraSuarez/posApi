@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -23,14 +22,28 @@ public class Venta {
     private Long ventaId;
     @Column(name="numeroVenta")
     private Long numeroVenta;
-    private BigDecimal subtotal;
+    private BigDecimal subTotal;
     private BigDecimal descuento;
     private BigDecimal total;
 
-    public Venta(BigDecimal subtotal, BigDecimal descuento, BigDecimal total) {
-        this.subtotal=subtotal;
+    public Venta(Long nuevoNumeroVenta, BigDecimal subtotal, BigDecimal descuento, BigDecimal total) {
+
+        this.numeroVenta=nuevoNumeroVenta;
+        this.subTotal=subtotal;
         this.descuento=descuento;
         this.total=total;
 
+
+    }
+
+    @Override
+    public String toString() {
+        return "Venta{" +
+                "ventaId=" + ventaId +
+                ", numeroVenta=" + numeroVenta +
+                ", subTotal=" + subTotal +
+                ", descuento=" + descuento +
+                ", total=" + total +
+                '}';
     }
 }

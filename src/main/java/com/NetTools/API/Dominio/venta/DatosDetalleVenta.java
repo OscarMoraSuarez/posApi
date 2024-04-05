@@ -4,16 +4,13 @@ import java.math.BigDecimal;
 
 public record DatosDetalleVenta(
 
-        Integer numeroVenta,
-        BigDecimal subtotal,
+        Long numeroVenta,
+        BigDecimal subTotal,
         BigDecimal descuento,
         BigDecimal total
 
+
 ) {
-
-
-
-
 
 
 }

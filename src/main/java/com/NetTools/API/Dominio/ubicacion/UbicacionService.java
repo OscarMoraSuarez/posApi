@@ -1,21 +1,17 @@
 package com.NetTools.API.Dominio.ubicacion;
 
-import com.NetTools.API.Dominio.categoria.Categoria;
-import com.NetTools.API.Dominio.categoria.CategoriaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class RegistroUbicacionService {
+public class UbicacionService {
     @Autowired
     UbicacionRepository ubicacionRepository;
     @Transactional
-    public DatosDetalleUbicacion registrar(DatosRegistroUbicacion datos){
-
-        Ubicacion ubicaion=new Ubicacion(datos.codigoUbicacion());
+    public DatosDetalleUbicacion registrar(DatosRegistroUbicacion datosRegistroUbicacion){
+        System.out.println("desde ubicacion service " + datosRegistroUbicacion);
+        Ubicacion ubicaion=new Ubicacion(datosRegistroUbicacion.codigoUbicacion());
         ubicacionRepository.save(ubicaion);
         return new DatosDetalleUbicacion(
                 ubicaion.getUbicacionId(),

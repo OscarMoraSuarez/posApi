@@ -4,8 +4,6 @@ import com.NetTools.API.Dominio.categoria.Categoria;
 import com.NetTools.API.Dominio.categoria.CategoriaRepository;
 import com.NetTools.API.Infra.Exceptions.ArchivoYaExistenteException;
 import com.NetTools.API.Infra.Exceptions.NombreArchivoVacioException;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,7 +15,7 @@ import java.math.BigDecimal;
 import java.nio.file.*;
 
 @Service
-public class RegistroDeProductoService {
+public class ProductoService {
 
     @Autowired
     private CategoriaRepository categoriaRepository;
@@ -93,7 +91,24 @@ public class RegistroDeProductoService {
 
         return urlCompleta;
     }
+    @Transactional
+    public Producto actualizarProductoService(DatosActualizarProducto datosActualizarProducto){
 
+        Categoria categoria=categoriaRepository.findByNombreCategoria(datosActualizarProducto.categoria());
+        Producto producto = productoRepository.findById(datosActualizarProducto.id())
+                .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
+        producto.actualizarDatos(
+                datosActualizarProducto.codigo(),
+                datosActualizarProducto.descripcion(),
+                categoria,
+                datosActualizarProducto.marca(),
+                datosActualizarProducto.precioEntrada(),
+                datosActualizarProducto.precioSalida(),
+                producto.getImagePath()
+        );
+
+        return productoRepository.save(producto);
+    }
 
 }
 

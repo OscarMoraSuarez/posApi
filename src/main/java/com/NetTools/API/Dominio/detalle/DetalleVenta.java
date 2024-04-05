@@ -18,19 +18,21 @@ public class DetalleVenta {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long detalleId;
-    private Integer numeroVenta;
+    private Long numeroVenta;
     private String codigoProducto;
     private Integer cantidad;
     private BigDecimal precioUnitario;
     private BigDecimal subtotal;
     private LocalDateTime fechaVenta;
 
-    public DetalleVenta(Integer numeroVenta, String codigoPro, Integer cantidad, BigDecimal precioUnitario, BigDecimal subtotal,LocalDateTime fechaVenta) {
+    public DetalleVenta(Long numeroVenta, String codigoProducto, Integer cantidad, BigDecimal precioUnitario, BigDecimal subtotal,LocalDateTime fechaVenta) {
         this.numeroVenta=numeroVenta;
-        this.codigoProducto=codigoPro;
+        this.codigoProducto=codigoProducto;
         this.cantidad=cantidad;
         this.precioUnitario=precioUnitario;
         this.subtotal=subtotal;
         this.fechaVenta=fechaVenta;
     }
+
+
 }

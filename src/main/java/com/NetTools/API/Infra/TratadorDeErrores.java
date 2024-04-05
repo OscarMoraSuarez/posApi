@@ -1,9 +1,6 @@
 package com.NetTools.API.Infra;
 
-import com.NetTools.API.Infra.Exceptions.ArchivoYaExistenteException;
-import com.NetTools.API.Infra.Exceptions.LocationNotFoundException;
-import com.NetTools.API.Infra.Exceptions.NombreArchivoVacioException;
-import com.NetTools.API.Infra.Exceptions.ProductNotFoundException;
+import com.NetTools.API.Infra.Exceptions.*;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +48,10 @@ public class TratadorDeErrores extends Exception{
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<String> manejarProductoNoEncontrado(ProductNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+    @ExceptionHandler(InsufficientInventoryException.class)
+    public ResponseEntity<String> manejarInventarioInsuficiente(InsufficientInventoryException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Inventario insuficiente: " + e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

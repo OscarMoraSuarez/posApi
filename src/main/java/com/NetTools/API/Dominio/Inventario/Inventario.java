@@ -1,6 +1,8 @@
 package com.NetTools.API.Dominio.Inventario;
 
 
+import com.NetTools.API.Dominio.producto.Producto;
+import com.NetTools.API.Dominio.ubicacion.Ubicacion;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,8 +20,12 @@ public class Inventario {
 @Id
 @ GeneratedValue(strategy = GenerationType.IDENTITY)
 private Long inventarioId;
-private String codigo;
 private int cantidad;
+private Long  productoId;
+private Long ubicacionId;
+private String productoCodigo;
+
+
 
 
 }

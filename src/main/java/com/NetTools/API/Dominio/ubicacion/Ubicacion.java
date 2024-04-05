@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of ="ubicacionId")
 public class Ubicacion {
     @Id
+
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long ubicacionId;

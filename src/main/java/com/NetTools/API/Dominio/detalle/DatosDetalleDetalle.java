@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 public record DatosDetalleDetalle(
 
         Long detalleId,
-        Integer numeroVenta,
+        Long numeroVenta,
         String codigoProducto,
         Integer cantidad,
         BigDecimal precioUnitario,
@@ -14,4 +14,5 @@ public record DatosDetalleDetalle(
 
 
 ) {
+
 }

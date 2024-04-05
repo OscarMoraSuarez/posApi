@@ -1,9 +1,8 @@
 package com.NetTools.API.controller;
 
 import com.NetTools.API.Dominio.Ingreso.*;
-import com.NetTools.API.Dominio.Inventario.Inventario;
+import com.NetTools.API.Dominio.Inventario.DatosEliminarStock;
 import com.NetTools.API.Dominio.Inventario.InventarioRepository;
-import com.NetTools.API.Dominio.ubicacion.Ubicacion;
 import com.NetTools.API.Infra.Exceptions.LocationNotFoundException;
 import com.NetTools.API.Infra.Exceptions.ProductNotFoundException;
 import jakarta.validation.Valid;
@@ -13,23 +12,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @RestController
 public class IngresoController {
 
 @Autowired
-private RegistroIngresoService registroIngresoService;
+private IngresoService ingresoService;
 @Autowired
 private InventarioRepository inventarioRepository;
 
-    @PostMapping("/inventario")
+    // Controlador de Ingreso
+    @PostMapping("/ingreso")
     public ResponseEntity<DatosDetalleIngreso> registrarIngreso(@RequestBody @Valid DatosRegistroIngreso datosRegistroIngreso) throws ProductNotFoundException, LocationNotFoundException {
-        var response = registroIngresoService.registrar(datosRegistroIngreso);
-        return ResponseEntity.ok(response);
+
+            DatosDetalleIngreso ingreso = ingresoService.registrar(datosRegistroIngreso);
+            return ResponseEntity.ok(ingreso);
     }
 
-    @PutMapping("/inventario")
+    /*@PutMapping("/ingreso")
     @Transactional
     public ResponseEntity<DatosDetalleDeleteStock> eliminarIngreso(@RequestBody @Valid DatosDeleteStock datosDeleteStock){
         Long ingresoId= datosDeleteStock.ingresoId();
@@ -38,7 +37,7 @@ private InventarioRepository inventarioRepository;
         registroIngresoService.eliminarStock(ingresoId,productoId,cantidad);
         DatosDetalleDeleteStock response= new DatosDetalleDeleteStock(HttpStatus.OK.value(),"Stock elimnado correctamente");
         return ResponseEntity.ok(response);
-    }
+    }*/
 
 
 }

@@ -25,7 +25,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
-import java.nio.file.FileAlreadyExistsException;
 import java.util.List;
 
 
@@ -35,12 +34,12 @@ public class ProductoController {
 
 
 
-    private final RegistroDeProductoService service;
+    private final ProductoService productoService;
     private final ProductoRepository productoRepository;
 
-    public ProductoController(ProductoRepository productoRepository,RegistroDeProductoService service) {
+    public ProductoController(ProductoRepository productoRepository, ProductoService productoService) {
         this.productoRepository = productoRepository;
-        this.service=service;
+        this.productoService=productoService;
     }
 
     @PostMapping
@@ -48,19 +47,11 @@ public class ProductoController {
             @RequestParam("imagen") MultipartFile imagen,
             @ModelAttribute @Valid DatosRegistroProducto datosRegistroProducto,
             UriComponentsBuilder uriComponentsBuilder)  {
-            System.out.println(datosRegistroProducto);
+
         try {
-            System.out.println("Datos recibidos:");
-            System.out.println("Código: " + datosRegistroProducto.codigo());
-            System.out.println("Descripción: " + datosRegistroProducto.descripcion());
-            System.out.println("Nombre de la categoría: " + datosRegistroProducto.nombreCategoria());
-            System.out.println("Marca: " + datosRegistroProducto.marca());
-            System.out.println("Precio de entrada: " + datosRegistroProducto.precioEntrada());
-            System.out.println("Precio de salida: " + datosRegistroProducto.precioSalida());
+            String imagePath = productoService.guardarArchivoEnCarpeta(imagen);
 
-            String imagePath = service.guardarArchivoEnCarpeta(imagen);
-
-            Producto producto = service.registrar(
+            Producto producto = productoService.registrar(
                     datosRegistroProducto.codigo(),
                     datosRegistroProducto.descripcion(),
                     datosRegistroProducto.nombreCategoria(),
@@ -117,33 +108,24 @@ public class ProductoController {
 
     //////////////////////////////////////////////////////
     @PutMapping
-    @Transactional// para hacer el commit despúes de actualizar se hace la transaccion con esta anotacion
-    public ResponseEntity actualizarProducto(@RequestBody @Valid DatosActualizarProducto datosActualizarProducto){
-        // en este caso es necesario @Transactional porque estamos usando JPA puro
-        // y noe stamso llamando ningún repositorio
-        Producto producto =productoRepository.getReferenceById(datosActualizarProducto.id());
-        producto.actualizarDatos(datosActualizarProducto);
-        // No es buena idea retornar la entidad del modelo
-        // por lo tanto es mejor practica retornar un DTO
-        return ResponseEntity.ok(new DatosDetalleProducto(
-                producto.getProductoId(),
-                producto.getCodigo(),
-                producto.getDescripcion(),
-                producto.getCategoria().getCategoriaId(),
-                producto.getMarca(),
-                producto.getPrecioEntrada(),
-                producto.getPrecioSalida(),
-                producto.getImagePath()
-        ));
+    public ResponseEntity<DatosDetalleProducto> actualizarProductoController(@RequestBody @Valid DatosActualizarProducto datosActualizarProducto){
+        Producto productoActualizado=productoService.actualizarProductoService(datosActualizarProducto);
+        if(productoActualizado!=null){
+            DatosDetalleProducto datosDetalleProducto= new DatosDetalleProducto(productoActualizado);
+            return ResponseEntity.ok(datosDetalleProducto);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
 
     }
 
 
     //////////////////////////////////////////////////////
     //DELETE en DB
-    @DeleteMapping("/{id}")
+    @DeleteMapping
     @Transactional
-    public ResponseEntity eliminarProducto(@PathVariable Long id){
+    public ResponseEntity eliminarStock(@RequestBody Long id){
         Producto producto =productoRepository.getReferenceById(id);
         productoRepository.delete(producto);
         HttpHeaders headers = new HttpHeaders();

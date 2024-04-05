@@ -12,33 +12,34 @@ public class VentaService {
     VentaRepository ventaRepository;
 
     @Transactional
-    public DatosDetalleVenta registrar(DatosRegistroVenta datosRegistroVenta) {
-
+    public Long registrarVentaPrincipal(DatosRegistroVenta datosRegistroVenta) {
         if (datosRegistroVenta == null) {
             // Utilizar un framework de logging como SLF4J con Logback o Log4j. Esto proporcionará un mejor control sobre la salida de log
             System.out.println("Los datos de la venta están vacíos");
             return null;
         }
 
-                    //este metodo incrementa en uno el numero de venta   // este metodo devuelve el ultimo numero de venta o null
+        // Este método incrementa en uno el número de venta
         Long nuevoNumeroVenta = incrementarNumeroVenta(obtenerUltimoNumeroVenta());
+        System.out.println("numero de venta:"+nuevoNumeroVenta);
         // Crear instancia de Venta
         Venta venta = new Venta(
-                datosRegistroVenta.subtotal(),
+                nuevoNumeroVenta, // Asignar el número de venta generado
+                datosRegistroVenta.subTotal(),
                 datosRegistroVenta.descuento(),
                 datosRegistroVenta.total()
         );
-        // Asignar el número de venta
-        venta.setNumeroVenta(nuevoNumeroVenta);
+
         // Guardar la venta en la base de datos
         // Podrías capturar excepciones específicas (como DataAccessException)
+        System.out.println("esta es la venta:"+venta.toString());
         ventaRepository.save(venta);
-        return new DatosDetalleVenta(nuevoNumeroVenta.intValue(), venta.getSubtotal(), venta.getDescuento(), venta.getTotal());
+
+        return nuevoNumeroVenta;
     }
 
     private Long obtenerUltimoNumeroVenta() {
-        Optional<Long> ultimoNumeroVentaOptional = ventaRepository.findMaxNumeroVenta();
-        return ultimoNumeroVentaOptional.orElse(null);
+        return ventaRepository.findMaxNumeroVenta().orElseGet(() -> 0L);
     }
 
 
