@@ -1,0 +1,3 @@
+ALTER TABLE venta
+ADD COLUMN mes INT,
+ADD COLUMN anio INT;

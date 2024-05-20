@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,6 +26,10 @@ public class Venta {
     private BigDecimal subTotal;
     private BigDecimal descuento;
     private BigDecimal total;
+    private Integer mes;
+    private Integer anio;
+    @Column(name = "fechaVenta", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private LocalDateTime fechaVenta;
 
     public Venta(Long nuevoNumeroVenta, BigDecimal subtotal, BigDecimal descuento, BigDecimal total) {
 
@@ -32,8 +37,17 @@ public class Venta {
         this.subTotal=subtotal;
         this.descuento=descuento;
         this.total=total;
+        this.fechaVenta=LocalDateTime.now();
 
 
+    }
+    
+    @PrePersist
+    public void prepPersist(){
+        if(fechaVenta!=null){
+            this.mes = fechaVenta.getMonthValue();
+            this.anio = fechaVenta.getYear();
+        }
     }
 
     @Override

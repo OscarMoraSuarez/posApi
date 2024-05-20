@@ -53,44 +53,46 @@ public class ProductoService {
         return null;
     }
 
-    public String guardarArchivoEnCarpeta(MultipartFile imagen)throws IOException {
+    public String guardarArchivoEnCarpeta(MultipartFile imagen) throws IOException {
         // Obtener el nombre del archivo desde la ruta
+        String nombreArchivo = imagen.getOriginalFilename();
 
-        String nombreArchivo =imagen.getOriginalFilename();
-
+        // Verificar si el nombre del archivo es nulo o vacío
         if (nombreArchivo == null || nombreArchivo.trim().isEmpty()) {
-            // Manejar el caso cuando el nombre del archivo es null o vacío
-            //throw new IllegalArgumentException("El nombre del archivo es nulo o vacío");
             throw new NombreArchivoVacioException("El nombre del archivo es nulo o vacío");
         }
         System.out.println(nombreArchivo);
-        String carpetaDestino = "mediaFiles";
 
-        // Verificar si la carpeta de destino existe
+        // Definir la carpeta de destino con una ruta absoluta
+        String carpetaDestino = "/home/back/mediaFiles";
+
+        // Verificar si la carpeta de destino existe y crearla si no existe
         Path directorioDestino = Paths.get(carpetaDestino);
         if (!Files.exists(directorioDestino)) {
             Files.createDirectories(directorioDestino);
         }
 
-        // Ruta completa de destino
+        // Definir la ruta completa de destino
         Path destino = directorioDestino.resolve(nombreArchivo);
         System.out.println("validando existencia del archivo en carpeta");
-        // Verificar si el archivo existe en la carpeta
+
+        // Verificar si el archivo ya existe en la carpeta de destino
         if (Files.exists(destino)) {
             throw new ArchivoYaExistenteException("El archivo ya existe en la carpeta de destino");
-
         }
 
         // Copiar el contenido del archivo al destino
-        Files.copy(imagen.getInputStream(),destino,StandardCopyOption.REPLACE_EXISTING);
+        Files.copy(imagen.getInputStream(), destino, StandardCopyOption.REPLACE_EXISTING);
 
-        // Construir la URL completa
+        // Construir la URL completa del archivo
         String urlCompleta = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/" + carpetaDestino + "/" + nombreArchivo)
+                .path("/mediaFiles/" + nombreArchivo) // Asegúrate de que esta ruta coincida con la ruta del servidor
                 .toUriString();
 
+        // Devolver la URL completa
         return urlCompleta;
     }
+
     @Transactional
     public Producto actualizarProductoService(DatosActualizarProducto datosActualizarProducto){
 

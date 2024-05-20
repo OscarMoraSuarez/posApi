@@ -200,4 +200,18 @@ public class ProductoController {
 
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<DatosConteoProducto> contarProductos() {
+        Long totalProductos = productoRepository.contarProductos();
+        if (totalProductos == null) {
+            totalProductos = 0L; // Si el recuento es null, establece el valor en cero
+        }
+        DatosConteoProducto datosConteoProducto = new DatosConteoProducto(totalProductos);
+        return ResponseEntity.ok(datosConteoProducto);
+    }
+
 }
+
+
+
+
