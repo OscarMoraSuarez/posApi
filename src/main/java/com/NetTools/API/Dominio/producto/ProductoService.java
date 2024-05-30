@@ -64,7 +64,7 @@ public class ProductoService {
         System.out.println(nombreArchivo);
 
         // Definir la carpeta de destino con una ruta absoluta
-        String carpetaDestino = "/home/back/mediaFiles";
+        String carpetaDestino = "mediaFiles";
 
         // Verificar si la carpeta de destino existe y crearla si no existe
         Path directorioDestino = Paths.get(carpetaDestino);

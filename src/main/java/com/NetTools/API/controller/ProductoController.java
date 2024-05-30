@@ -123,10 +123,11 @@ public class ProductoController {
 
     //////////////////////////////////////////////////////
     //DELETE en DB
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity eliminarStock(@RequestBody Long id){
-        Producto producto =productoRepository.getReferenceById(id);
+    public ResponseEntity eliminarStock(@PathVariable Long id){
+        System.out.println("desde el backend el id del producto es " + id);
+        Producto producto = productoRepository.findByProductoId(id);
         productoRepository.delete(producto);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Mensaje", "El producto con ID " + id + " ha sido eliminado exitosamente");
@@ -159,6 +160,7 @@ public class ProductoController {
     //////////////////////////////////////////////////////
     @GetMapping("/codigo/{codigo}")
     public ResponseEntity<DatosDetalleProducto> productoPorCodigo(@PathVariable String codigo) {
+        System.out.println("el codigo a buscar es "+ codigo);
         Producto producto = productoRepository.getProductoByCodigo(codigo);
         if(producto!=null){
             var datosProducto = new DatosDetalleProducto(
